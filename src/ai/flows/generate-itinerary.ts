@@ -46,7 +46,7 @@ const itineraryPrompt = ai.definePrompt({
 
 **User Details:**
 *   **From:** {{{from}}}
-*   **Arrival:** {{{arrive_datetime}}}
+*   **Arrival Date & Time:** {{{arrive_datetime}}}
 *   **Group Size:** {{{group_size}}} people
 *   **Hotel:** {{{hotel}}} (or "not specified")
 *   **Language:** {{{language}}}
@@ -55,6 +55,7 @@ const itineraryPrompt = ai.definePrompt({
 
 1.  **Detailed Itinerary (JSON Table Format):**
     *   Create a 3-day itinerary as a JSON array of events.
+    *   The first event on Day 1 should be based on the user's arrival time. For example, if they arrive in the morning, the first activity could be "Hotel Check-in and Freshen up". If they arrive in the afternoon, it might be lunch followed by check-in.
     *   Each event object must have four keys: "day", "time", "activity", and "description".
     *   Include main temple visits (like Sparsha Darshan, Abhishekam), local sightseeing (e.g., Sakshi Ganapathi, Paladhara Panchadara, Dam), and ropeway/boating if time permits.
     *   Suggest realistic travel times and include meal times.

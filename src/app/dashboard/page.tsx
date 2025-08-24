@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, ExternalLink, Hotel, ListChecks, Loader2, Map, HeartPulse, Phone } from "lucide-react";
+import { Download, ExternalLink, Hotel, ListChecks, Loader2, Map } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { generateItinerary, GenerateItineraryInput, GenerateItineraryOutput } from "@/ai/flows/generate-itinerary";
@@ -90,26 +90,6 @@ function DashboardContent() {
                             <Button variant="outline" disabled={!itinerary}><Download className="mr-2 h-4 w-4"/>Download PDF</Button>
                         </CardFooter>
                     </Card>
-
-                    <Card className="flex flex-col">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 font-headline"><Map className="text-primary"/>Emergency & Offline Kit</CardTitle>
-                            <CardDescription>Maps, Contacts, and Medical Info</CardDescription>
-                        </CardHeader>
-                        <CardContent className="flex-grow">
-                            <p className="text-muted-foreground">Access essential emergency contacts, hospital locations, and instructions for downloading an offline map for peace of mind.</p>
-                            <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-1"><HeartPulse size={16}/>Hospitals</div>
-                                <div className="flex items-center gap-1"><Phone size={16}/>Contacts</div>
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                            <Link href="/emergency" passHref>
-                                <Button variant="outline"><Download className="mr-2 h-4 w-4"/>View Emergency Kit</Button>
-                            </Link>
-                        </CardFooter>
-                    </Card>
-
                     <Card className="flex flex-col">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 font-headline"><Hotel className="text-primary"/>Accommodation</CardTitle>

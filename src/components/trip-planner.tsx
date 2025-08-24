@@ -24,13 +24,21 @@ import { Calendar } from "./ui/calendar"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 import { useToast } from "@/hooks/use-toast"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
 const formSchema = z.object({
   from_location_type: z.enum(["gps", "address"]),
   from_location: z.string().min(2, { message: "Please enter a valid location." }),
   destination: z.string(),
-  departure_date: z.date(),
-  return_date: z.date(),
+  departure_date: z.date({
+    required_error: "Departure date is required.",
+  }),
+  arrival_time: z.string({
+    required_error: "Arrival time is required.",
+  }),
+  return_date: z.date({
+    required_error: "Return date is required.",
+  }),
   group_size: z.coerce.number().min(1, { message: "Group must have at least one person." }),
 })
 
@@ -50,10 +58,14 @@ export function TripPlanner() {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    const arrival_datetime = new Date(values.departure_date);
+    const [hours, minutes] = values.arrival_time.split(':');
+    arrival_datetime.setHours(parseInt(hours), parseInt(minutes));
+
     const params = new URLSearchParams({
         from: values.from_location,
         destination: values.destination,
-        departure: values.departure_date.toISOString(),
+        departure: arrival_datetime.toISOString(),
         return: values.return_date.toISOString(),
         groupSize: values.group_size.toString(),
     });
@@ -178,7 +190,7 @@ export function TripPlanner() {
                 name="departure_date"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Departure Date</FormLabel>
+                    <FormLabel>Arrival Date</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -210,6 +222,19 @@ export function TripPlanner() {
                         />
                       </PopoverContent>
                     </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="arrival_time"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Arrival Time</FormLabel>
+                     <FormControl>
+                        <Input type="time" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
