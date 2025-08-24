@@ -2,26 +2,19 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Globe, Menu } from "lucide-react"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { TempleIcon } from "@/components/icons/temple-icon"
 
 export function Header() {
-  const [language, setLanguage] = useState("en")
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/dashboard", label: "Dashboard" },
     { href: "/darshan", label: "Darshan Info" },
+    { href: "/translate", label: "Translate" },
     { href: "/emergency", label: "Emergency Kit" },
   ]
 
@@ -84,18 +77,6 @@ export function Header() {
           <div className="w-full flex-1 md:w-auto md:flex-none">
             {/* Can add a command menu here in future */}
           </div>
-          <Select value={language} onValueChange={setLanguage}>
-            <SelectTrigger className="w-[150px] h-9">
-              <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4" />
-                <SelectValue placeholder="Language" />
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="en">English</SelectItem>
-              <SelectItem value="hi">हिन्दी (Hindi)</SelectItem>
-            </SelectContent>
-          </Select>
         </div>
       </div>
     </header>

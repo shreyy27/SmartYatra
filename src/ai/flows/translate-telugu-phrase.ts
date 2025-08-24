@@ -1,49 +1,50 @@
-// This file is machine-generated - edit at your own risk.
-
+// src/ai/flows/translate-telugu-phrase.ts
 'use server';
-
 /**
  * @fileOverview A flow to translate phrases into Telugu.
  *
- * - translateTeluguPhrase - A function that translates a given phrase into Telugu.
- * - TranslateTeluguPhraseInput - The input type for the translateTeluguPhrase function.
- * - TranslateTeluguPhraseOutput - The return type for the translateTeluguPhrase function.
+ * - translateToTelugu - A function that translates a given phrase into Telugu.
+ * - TranslateToTeluguInput - The input type for the translateToTelugu function.
+ * - TranslateToTeluguOutput - The return type for the translateToTelugu function.
  */
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const TranslateTeluguPhraseInputSchema = z.object({
+const TranslateToTeluguInputSchema = z.object({
   phrase: z.string().describe('The phrase to translate to Telugu.'),
 });
-export type TranslateTeluguPhraseInput = z.infer<typeof TranslateTeluguPhraseInputSchema>;
+export type TranslateToTeluguInput = z.infer<typeof TranslateToTeluguInputSchema>;
 
-const TranslateTeluguPhraseOutputSchema = z.object({
-  teluguText: z.string().describe('The translated phrase in Telugu.'),
-  transliteration: z.string().describe('The transliteration of the Telugu phrase.'),
-  ttsLang: z.string().describe('The language tag for Telugu TTS (te-IN).'),
+const TranslateToTeluguOutputSchema = z.object({
+  teluguText: z.string().describe('The translated phrase in Telugu script.'),
+  transliteration: z.string().describe('An English transliteration of the Telugu phrase to help with pronunciation.'),
 });
-export type TranslateTeluguPhraseOutput = z.infer<typeof TranslateTeluguPhraseOutputSchema>;
+export type TranslateToTeluguOutput = z.infer<typeof TranslateToTeluguOutputSchema>;
 
-export async function translateTeluguPhrase(input: TranslateTeluguPhraseInput): Promise<TranslateTeluguPhraseOutput> {
-  return translateTeluguPhraseFlow(input);
+export async function translateToTelugu(input: TranslateToTeluguInput): Promise<TranslateToTeluguOutput> {
+  return translateToTeluguFlow(input);
 }
 
-const translateTeluguPhrasePrompt = ai.definePrompt({
-  name: 'translateTeluguPhrasePrompt',
-  input: {schema: TranslateTeluguPhraseInputSchema},
-  output: {schema: TranslateTeluguPhraseOutputSchema},
-  prompt: `Translate the short phrase "{{{phrase}}}" into polite, short Telugu suitable for showing to a shopkeeper or guard. Keep it under 10 words. Provide transliteration in Latin letters and generate a short TTS-friendly sentence. Also provide a recommended audio voice language tag.\nReturn JSON: { "telugu_text": "...", "transliteration": "...", "tts_lang": "te-IN" }`,
+const translatePrompt = ai.definePrompt({
+  name: 'translateToTeluguPrompt',
+  input: {schema: TranslateToTeluguInputSchema},
+  output: {schema: TranslateToTeluguOutputSchema},
+  prompt: `You are a helpful translation assistant. Translate the following English phrase into polite, everyday Telugu. Also, provide a simple English transliteration.
+
+Phrase: "{{{phrase}}}"
+
+Keep the translation natural and easy for a traveler to use when speaking to a local person.`,
 });
 
-const translateTeluguPhraseFlow = ai.defineFlow(
+const translateToTeluguFlow = ai.defineFlow(
   {
-    name: 'translateTeluguPhraseFlow',
-    inputSchema: TranslateTeluguPhraseInputSchema,
-    outputSchema: TranslateTeluguPhraseOutputSchema,
+    name: 'translateToTeluguFlow',
+    inputSchema: TranslateToTeluguInputSchema,
+    outputSchema: TranslateToTeluguOutputSchema,
   },
   async input => {
-    const {output} = await translateTeluguPhrasePrompt(input);
+    const {output} = await translatePrompt(input);
     return output!;
   }
 );
