@@ -19,6 +19,10 @@ function WelcomeAnimation() {
     return () => clearTimeout(timer);
   }, []);
 
+  if (!isVisible) {
+    return null;
+  }
+
   return (
     <AnimatePresence>
       {isVisible && (
@@ -55,9 +59,15 @@ function WelcomeAnimation() {
 
 
 export default function Home() {
+    const [isClient, setIsClient] = useState(false)
+
+    useEffect(() => {
+        setIsClient(true)
+    }, [])
+
   return (
     <>
-    <WelcomeAnimation />
+    {isClient && <WelcomeAnimation />}
     <div className="container relative">
       <div className="absolute top-4 right-4 z-10">
         <Link href="/translate">
