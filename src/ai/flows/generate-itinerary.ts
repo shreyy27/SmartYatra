@@ -17,14 +17,20 @@ const GenerateItineraryInputSchema = z.object({
   group_size: z.number().describe('The number of people in the group.'),
   hotel: z.string().nullable().describe('The name of the hotel (if chosen, otherwise null).'),
   language: z.enum(['Hindi', 'English']).describe('The preferred language for the itinerary.'),
-  weather_alerts: z.string().nullable().describe('A short summary of weather alerts (if any, otherwise null).'),
 });
 export type GenerateItineraryInput = z.infer<typeof GenerateItineraryInputSchema>;
 
+const ItineraryEventSchema = z.object({
+    day: z.number().describe("The day number of the event (e.g., 1, 2, or 3)."),
+    time: z.string().describe("The time slot for the activity (e.g., '09:00 AM - 11:00 AM')."),
+    activity: z.string().describe("The name of the activity or event."),
+    description: z.string().describe("A brief description of the activity and any relevant notes (e.g., 'Main temple visit for Sparsha Darshan. Dress code applies.').")
+});
+
 const GenerateItineraryOutputSchema = z.object({
-  itinerary: z.string().describe('A human-readable itinerary paragraph in the requested language. Do not use markdown formatting like asterisks for bolding.'),
+  itinerary: z.array(ItineraryEventSchema).describe("A detailed 3-day itinerary as a list of events. Each event must be an object with day, time, activity, and description."),
   packing_checklist: z.string().describe('A packing checklist as a bulleted list. Do not use markdown formatting like asterisks for bolding.'),
-  safety_note: z.string().describe('One short travel safety note based on weather_alerts.'),
+  safety_note: z.string().describe('One short, practical travel safety note for Srisailam (e.g., hydration, ghat road driving).'),
 });
 export type GenerateItineraryOutput = z.infer<typeof GenerateItineraryOutputSchema>;
 
@@ -44,29 +50,27 @@ const itineraryPrompt = ai.definePrompt({
 *   **Group Size:** {{{group_size}}} people
 *   **Hotel:** {{{hotel}}} (or "not specified")
 *   **Language:** {{{language}}}
-*   **Weather Alerts:** {{{weather_alerts}}}
 
 **Your Task:**
 
-1.  **Detailed Itinerary:**
-    *   Create a 3-day itinerary with specific time slots (e.g., 9:00 AM - 11:00 AM).
+1.  **Detailed Itinerary (JSON Table Format):**
+    *   Create a 3-day itinerary as a JSON array of events.
+    *   Each event object must have four keys: "day", "time", "activity", and "description".
     *   Include main temple visits (like Sparsha Darshan, Abhishekam), local sightseeing (e.g., Sakshi Ganapathi, Paladhara Panchadara, Dam), and ropeway/boating if time permits.
-    *   Suggest realistic travel times between locations.
-    *   Recommend meal times and suggest types of local food to try.
-    *   Format it clearly with Day 1, Day 2, Day 3 headings.
+    *   Suggest realistic travel times and include meal times.
+    *   Example for one event: \`{"day": 1, "time": "04:00 PM - 05:00 PM", "activity": "Check-in to Hotel", "description": "Settle in and freshen up after your journey."}\`
 
 2.  **Packing Checklist:**
     *   Create a comprehensive bulleted list of essential items.
-    *   Include clothing suitable for the dress code (Dhoti/Kurta for men, Saree/Salwar for women), toiletries, first-aid, and any specific items needed for rituals.
+    *   Include clothing suitable for the dress code (Dhoti/Kurta for men, Saree/Salwar for women), toiletries, first-aid, etc.
 
 3.  **Safety Note:**
-    *   Provide a practical safety tip based on the provided \`weather_alerts\` or general travel advice for Srisailam (e.g., hydration, ghat road driving).
+    *   Provide a single, practical safety tip for Srisailam (e.g., ghat road driving, hydration).
 
 **Output Style:**
 *   Respond in the requested language ({{{language}}}).
-*   The tone should be helpful, respectful, and encouraging.
-*   **IMPORTANT**: Do not use any markdown formatting like asterisks for bolding or lists. Use plain text and newlines.
-*   Total response should be detailed but easy to read. Aim for a token count around 800-1000 to provide sufficient detail.`,
+*   The tone should be helpful and respectful.
+*   **IMPORTANT**: Do not use any markdown formatting like asterisks for bolding or lists in the checklist. Use plain text and newlines. The itinerary must be a valid JSON array.`,
 });
 
 const generateItineraryFlow = ai.defineFlow(
