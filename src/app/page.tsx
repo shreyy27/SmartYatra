@@ -42,7 +42,7 @@ function WelcomeAnimation() {
               transition={{ delay: 0.5, duration: 0.7 }}
               className="font-headline text-4xl md:text-5xl text-primary mb-2"
             >
-              Namaste, Pandeyji! 🙏
+              Namaste, Pandeyji! 🥰🙏
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
