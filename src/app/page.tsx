@@ -1,12 +1,65 @@
+
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { TripPlanner } from "@/components/trip-planner";
 import { Languages } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+function WelcomeAnimation() {
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 4000); // Hide after 4 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 50 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm"
+        >
+          <div className="text-center p-8 rounded-lg shadow-2xl bg-card">
+            <motion.h1 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
+              className="font-headline text-4xl md:text-5xl text-primary mb-2"
+            >
+              Welcome Pandeyji
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2, duration: 0.7 }}
+              className="font-body text-lg md:text-xl text-muted-foreground"
+            >
+              Hum aasha karte hai aapki yatra shubh rahe
+            </motion.p>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 
 export default function Home() {
   return (
+    <>
+    <WelcomeAnimation />
     <div className="container relative">
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 z-10">
         <Link href="/translate">
           <Button>
             <Languages className="mr-2 h-5 w-5" />
@@ -26,5 +79,6 @@ export default function Home() {
         <TripPlanner />
       </section>
     </div>
+    </>
   );
 }

@@ -1,3 +1,4 @@
+
 // src/ai/flows/generate-itinerary.ts
 'use server';
 /**
@@ -12,7 +13,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateItineraryInputSchema = z.object({
-  from: z.string().describe('The starting location of the trip (city or GPS coordinates).'),
+  from: z.string().describe('The starting location of the trip (this will be generic like "User\'s location").'),
   arrive_datetime: z.string().describe('The arrival date and time at Srisailam (ISO format).'),
   group_size: z.number().describe('The number of people in the group.'),
   hotel: z.string().nullable().describe('The name of the hotel (if chosen, otherwise null).'),
@@ -45,7 +46,6 @@ const itineraryPrompt = ai.definePrompt({
   prompt: `You are an expert travel planner specializing in pilgrimage trips to Srisailam. Create a detailed and practical 3-day itinerary for a group.
 
 **User Details:**
-*   **From:** {{{from}}}
 *   **Arrival Date & Time:** {{{arrive_datetime}}}
 *   **Group Size:** {{{group_size}}} people
 *   **Hotel:** {{{hotel}}} (or "not specified")

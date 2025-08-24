@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, ExternalLink, Hotel, ListChecks, Loader2, Map } from "lucide-react";
+import { ExternalLink, Hotel, ListChecks, Loader2, Map } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { generateItinerary, GenerateItineraryInput, GenerateItineraryOutput } from "@/ai/flows/generate-itinerary";
@@ -22,7 +22,6 @@ import {
 function DashboardContent() {
     const searchParams = useSearchParams();
     const { toast } = useToast();
-    const from = searchParams.get('from');
     const departure = searchParams.get('departure');
     const groupSize = searchParams.get('groupSize');
 
@@ -33,7 +32,7 @@ function DashboardContent() {
         setIsGenerating(true);
         setItinerary(null);
         try {
-            if (!from || !departure || !groupSize) {
+            if (!departure || !groupSize) {
                 toast({
                     variant: "destructive",
                     title: "Missing Information",
@@ -44,7 +43,7 @@ function DashboardContent() {
             }
 
             const input: GenerateItineraryInput = {
-                from: from,
+                from: "User's location", // Placeholder since we removed it
                 arrive_datetime: departure,
                 group_size: parseInt(groupSize),
                 hotel: null, // Placeholder
@@ -69,7 +68,7 @@ function DashboardContent() {
         <div className="container py-8 md:py-12">
             <div className="mb-8">
                 <h1 className="font-headline text-4xl font-bold">Your Yatra Dashboard</h1>
-                <p className="text-muted-foreground">Trip from <span className="text-primary font-semibold">{from || 'your location'}</span> to Srisailam.</p>
+                <p className="text-muted-foreground">Your Trip to Srisailam</p>
             </div>
 
             <div className="grid gap-6">
@@ -87,7 +86,9 @@ function DashboardContent() {
                                 {isGenerating ? <Loader2 className="mr-2 animate-spin"/> : null}
                                 {isGenerating ? 'Generating...' : itinerary ? 'Regenerate Itinerary' : 'Generate Itinerary'}
                             </Button>
-                            <Button variant="outline" disabled={!itinerary}><Download className="mr-2 h-4 w-4"/>Download PDF</Button>
+                            <Link href="/emergency">
+                                <Button variant="outline"><Map className="mr-2 h-4 w-4"/>Download Kit</Button>
+                            </Link>
                         </CardFooter>
                     </Card>
                     <Card className="flex flex-col">
