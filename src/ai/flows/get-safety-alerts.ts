@@ -9,7 +9,8 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { getWeather, WeatherDataSchema } from '@/services/weather';
+import { getWeather } from '@/services/weather';
+import { WeatherDataSchema } from '@/lib/types';
 import { z } from 'genkit';
 
 const GetSafetyAlertsInputSchema = z.object({
@@ -55,6 +56,9 @@ const safetyAlertsPrompt = ai.definePrompt({
     6.  Output the current temperature in Celsius.
     
     Provide a response in the required JSON format.`,
+    output: {
+      schema: GetSafetyAlertsOutputSchema,
+    }
 });
 
 const getSafetyAlertsFlow = ai.defineFlow(

@@ -1,24 +1,23 @@
 // src/services/weather.ts
 'use server';
 
-import { z } from 'zod';
-
-export const WeatherDataSchema = z.object({
-  location: z.string(),
-  temperature: z.number(),
-  condition: z.string(),
-  wind_speed: z.number(),
-  humidity: z.number(),
-  rain_volume: z.number().optional(),
-});
-export type WeatherData = z.infer<typeof WeatherDataSchema>;
+import type { WeatherData } from '@/lib/types';
 
 // This is a mock function. In a real application, you would fetch this data
 // from a weather API like OpenWeatherMap.
 export async function getWeather(location: string): Promise<WeatherData> {
   const apiKey = process.env.OPENWEATHER_API_KEY;
   if (!apiKey) {
-    throw new Error('OpenWeather API key not found.');
+    console.error('OpenWeather API key not found. Please set OPENWEATHER_API_KEY in .env.local');
+    // Return mock data or throw an error if the API key is missing
+    return {
+      location: location,
+      temperature: 25,
+      condition: 'Clear',
+      wind_speed: 5,
+      humidity: 60,
+      rain_volume: 0,
+    };
   }
 
   // First, get coordinates for the location
