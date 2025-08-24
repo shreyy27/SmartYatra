@@ -1,8 +1,19 @@
+import { Button } from "@/components/ui/button";
 import { TripPlanner } from "@/components/trip-planner";
+import { Languages } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <div className="container relative">
+      <div className="absolute top-4 right-4">
+        <Link href="/translate">
+          <Button>
+            <Languages className="mr-2 h-5 w-5" />
+            Translate
+          </Button>
+        </Link>
+      </div>
       <section className="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20">
         <h1 className="text-center text-3xl font-bold leading-tight tracking-tighter md:text-6xl lg:leading-[1.1] font-headline text-balance">
           Your Personal Yatra Assistant
