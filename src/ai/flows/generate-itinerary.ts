@@ -22,9 +22,8 @@ const GenerateItineraryInputSchema = z.object({
 export type GenerateItineraryInput = z.infer<typeof GenerateItineraryInputSchema>;
 
 const GenerateItineraryOutputSchema = z.object({
-  itinerary: z.string().describe('A human-readable itinerary paragraph in the requested language.'),
-  packing_checklist: z.string().describe('A packing checklist (bullet list).'),
-  calendar_events: z.string().describe('Calendar events as JSON array [{title,start,end,notes}].'),
+  itinerary: z.string().describe('A human-readable itinerary paragraph in the requested language. Do not use markdown formatting like asterisks for bolding.'),
+  packing_checklist: z.string().describe('A packing checklist as a bulleted list. Do not use markdown formatting like asterisks for bolding.'),
   safety_note: z.string().describe('One short travel safety note based on weather_alerts.'),
 });
 export type GenerateItineraryOutput = z.infer<typeof GenerateItineraryOutputSchema>;
@@ -60,15 +59,13 @@ const itineraryPrompt = ai.definePrompt({
     *   Create a comprehensive bulleted list of essential items.
     *   Include clothing suitable for the dress code (Dhoti/Kurta for men, Saree/Salwar for women), toiletries, first-aid, and any specific items needed for rituals.
 
-3.  **Calendar Events (JSON):**
-    *   Generate a JSON array of calendar events. Each event must have \`title\`, \`start\` (ISO format), \`end\` (ISO format), and descriptive \`notes\`.
-
-4.  **Safety Note:**
+3.  **Safety Note:**
     *   Provide a practical safety tip based on the provided \`weather_alerts\` or general travel advice for Srisailam (e.g., hydration, ghat road driving).
 
 **Output Style:**
 *   Respond in the requested language ({{{language}}}).
 *   The tone should be helpful, respectful, and encouraging.
+*   **IMPORTANT**: Do not use any markdown formatting like asterisks for bolding or lists. Use plain text and newlines.
 *   Total response should be detailed but easy to read. Aim for a token count around 800-1000 to provide sufficient detail.`,
 });
 

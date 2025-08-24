@@ -161,14 +161,7 @@ function DashboardContent() {
                             </div>
                             <div>
                                 <h3 className="font-semibold text-lg flex items-center gap-2"><ListChecks className="text-primary" /> Packing Checklist</h3>
-                                <ul className="list-disc pl-5 text-muted-foreground whitespace-pre-wrap">
-                                    {itinerary.packing_checklist.split('\n').filter(Boolean).map((item, index) => <li key={index}>{item.replace(/^- /, '')}</li>)}
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 className="font-semibold text-lg flex items-center gap-2"><Calendar className="text-primary" /> Calendar Events</h3>
-                                <p className="text-muted-foreground text-sm">You can add these events to your calendar.</p>
-                                <pre className="text-xs bg-muted p-2 rounded-md mt-2 overflow-x-auto"><code>{itinerary.calendar_events}</code></pre>
+                                <p className="text-muted-foreground whitespace-pre-wrap">{itinerary.packing_checklist}</p>
                             </div>
                             <div>
                                 <h3 className="font-semibold text-lg flex items-center gap-2"><ShieldAlert className="text-primary" /> Safety Note</h3>
