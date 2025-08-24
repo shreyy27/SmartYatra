@@ -22,7 +22,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { CalendarIcon, Loader2, LocateFixed, MapPin } from "lucide-react"
 import { Calendar } from "./ui/calendar"
 import { cn } from "@/lib/utils"
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
@@ -46,6 +46,8 @@ export function TripPlanner() {
   const router = useRouter()
   const { toast } = useToast()
   const [isLocating, setIsLocating] = useState(false)
+  const [suggestions, setSuggestions] = useState<any[]>([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,6 +60,7 @@ export function TripPlanner() {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    setShowSuggestions(false);
     const arrival_datetime = new Date(values.departure_date);
     const [hours, minutes] = values.arrival_time.split(':');
     arrival_datetime.setHours(parseInt(hours), parseInt(minutes));
@@ -74,6 +77,7 @@ export function TripPlanner() {
 
   const handleUseCurrentLocation = () => {
     setIsLocating(true)
+    setShowSuggestions(false);
     if (!navigator.geolocation) {
       toast({
         variant: "destructive",
@@ -105,6 +109,50 @@ export function TripPlanner() {
     )
   }
 
+  const fetchSuggestions = useCallback(async (query: string) => {
+    if (query.length < 3) {
+        setSuggestions([]);
+        setShowSuggestions(false);
+        return;
+    }
+    const apiKey = process.env.NEXT_PUBLIC_MAPPLS_API_KEY;
+    if (!apiKey) {
+      console.error("Mappls API key not configured.");
+      // Silently fail, or show a toast. For now, silent.
+      return;
+    }
+    
+    try {
+        const response = await fetch(`https://atlas.mappls.com/api/places/search/json?query=${query}&pod=city`, {
+            headers: {
+              'Authorization': `bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+        setSuggestions(data.suggestedLocations || []);
+        setShowSuggestions(true);
+    } catch (error) {
+        console.error("Error fetching Mappls suggestions:", error);
+        setShowSuggestions(false);
+    }
+  }, []);
+
+  const handleSuggestionClick = (suggestion: any) => {
+      form.setValue("from_location", suggestion.placeName);
+      setSuggestions([]);
+      setShowSuggestions(false);
+  }
+
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === 'from_location' && form.getValues('from_location_type') === 'address') {
+        fetchSuggestions(value.from_location || '');
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form.watch, fetchSuggestions]);
+
   return (
     <Card className="shadow-lg">
       <CardHeader>
@@ -121,7 +169,11 @@ export function TripPlanner() {
                   <FormLabel>Starting Location</FormLabel>
                   <FormControl>
                     <RadioGroup
-                      onValueChange={field.onChange}
+                      onValueChange={(value) => {
+                        field.onChange(value);
+                        form.setValue("from_location", "");
+                        setShowSuggestions(false);
+                      }}
                       defaultValue={field.value}
                       className="flex flex-col space-y-1"
                     >
@@ -156,13 +208,34 @@ export function TripPlanner() {
                   <FormControl>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                      <Input placeholder="e.g. Pune, Hyderabad..." {...field} className="pl-10" disabled={form.watch('from_location_type') === 'gps'}/>
+                      <Input 
+                        placeholder="e.g. Pune, Hyderabad..." 
+                        {...field} 
+                        className="pl-10" 
+                        disabled={form.watch('from_location_type') === 'gps'}
+                        autoComplete="off"
+                        onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                        onFocus={(e) => fetchSuggestions(e.target.value)}
+                      />
                       {form.watch('from_location_type') === 'gps' &&
                         <Button type="button" size="sm" onClick={handleUseCurrentLocation} className="absolute right-1 top-1/2 -translate-y-1/2 h-8" disabled={isLocating}>
                           {isLocating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LocateFixed className="mr-2 h-4 w-4" />}
                           Locate
                         </Button>
                       }
+                      {showSuggestions && suggestions.length > 0 && form.watch('from_location_type') === 'address' && (
+                          <div className="absolute z-10 w-full bg-card border rounded-md mt-1 shadow-lg">
+                              {suggestions.map((suggestion) => (
+                                  <div
+                                      key={suggestion.eLoc}
+                                      className="p-2 hover:bg-accent cursor-pointer"
+                                      onClick={() => handleSuggestionClick(suggestion)}
+                                  >
+                                      {suggestion.placeName}
+                                  </div>
+                              ))}
+                          </div>
+                      )}
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -303,3 +376,5 @@ export function TripPlanner() {
     </Card>
   )
 }
+
+    
