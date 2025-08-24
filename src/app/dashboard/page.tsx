@@ -11,6 +11,7 @@ import { generateItinerary, GenerateItineraryInput, GenerateItineraryOutput } fr
 import { getSafetyAlerts, GetSafetyAlertsOutput } from "@/ai/flows/get-safety-alerts";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import Link from "next/link";
 
 function DashboardContent() {
     const searchParams = useSearchParams();
@@ -224,14 +225,16 @@ function DashboardContent() {
                             <CardDescription>Maps, Contacts, and Medical Info</CardDescription>
                         </CardHeader>
                         <CardContent className="flex-grow">
-                            <p className="text-muted-foreground">Download an offline map and a list of emergency contacts, hospitals, and pharmacies for your peace of mind.</p>
+                            <p className="text-muted-foreground">Access essential emergency contacts, hospital locations, and instructions for downloading an offline map for peace of mind.</p>
                             <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-1"><HeartPulse size={16}/>Hospitals</div>
                                 <div className="flex items-center gap-1"><Phone size={16}/>Contacts</div>
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <Button variant="outline"><Download className="mr-2 h-4 w-4"/>Download Kit</Button>
+                            <Link href="/emergency" passHref>
+                                <Button variant="outline"><Download className="mr-2 h-4 w-4"/>View Emergency Kit</Button>
+                            </Link>
                         </CardFooter>
                     </Card>
 
