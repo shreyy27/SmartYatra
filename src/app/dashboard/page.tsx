@@ -4,7 +4,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Calendar, Cloud, CloudRain, Download, HeartPulse, Hotel, ListChecks, Loader2, Map, Phone, Route, ShieldAlert, ShieldCheck, Waves } from "lucide-react";
+import { Calendar, Cloud, CloudRain, Download, ExternalLink, HeartPulse, Hotel, ListChecks, Loader2, Map, Phone, Route, ShieldAlert, ShieldCheck, Waves } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { generateItinerary, GenerateItineraryInput, GenerateItineraryOutput } from "@/ai/flows/generate-itinerary";
@@ -240,15 +240,19 @@ function DashboardContent() {
 
                     <Card className="flex flex-col">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 font-headline"><Hotel className="text-primary"/>Accommodation Finder</CardTitle>
-                            <CardDescription>Find hotels near your location</CardDescription>
+                            <CardTitle className="flex items-center gap-2 font-headline"><Hotel className="text-primary"/>Accommodation</CardTitle>
+                            <CardDescription>Book official Devasthanam lodging</CardDescription>
                         </CardHeader>
                         <CardContent className="flex-grow">
-                            <p className="text-muted-foreground">Discover hotels sorted by distance and travel time. Links to book on external sites.</p>
+                            <p className="text-muted-foreground">Book your stay at official Srisailam Devasthanam accommodations directly through their portal for a convenient and authentic experience.</p>
                         </CardContent>
-                        <CardFooter className="flex flex-col sm:flex-row gap-2 w-full">
-                            <Button className="w-full sm:w-auto">Find Nearest Hotels</Button>
-                            <Button variant="outline" className="w-full sm:w-auto">Upload Booking Proof</Button>
+                        <CardFooter>
+                            <Link href="https://www.srisailadevasthanam.org/en-in/devotee-app/online-booking/accommodations" target="_blank" rel="noopener noreferrer">
+                                <Button>
+                                    Book Official Accommodation
+                                    <ExternalLink className="ml-2 h-4 w-4"/>
+                                </Button>
+                            </Link>
                         </CardFooter>
                     </Card>
                 </div>
@@ -298,3 +302,5 @@ export default function DashboardPage() {
         </Suspense>
     )
 }
+
+    
