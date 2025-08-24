@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Download, ExternalLink, HeartPulse, MapPinned, Phone, Shield, Car, Clock, Banknote, FirstAidKit, Siren, HelpCircle } from "lucide-react";
+import { BriefcaseMedical, Download, ExternalLink, HeartPulse, MapPinned, Phone, Shield, Car, Siren } from "lucide-react";
 import Link from "next/link";
 import {
     Table,
@@ -150,7 +150,7 @@ export default function EmergencyPage() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 font-headline"><FirstAidKit className="text-primary"/>Health & Safety Tips</CardTitle>
+                            <CardTitle className="flex items-center gap-2 font-headline"><BriefcaseMedical className="text-primary"/>Health & Safety Tips</CardTitle>
                             <CardDescription>Practical advice for a comfortable and safe trip.</CardDescription>
                         </CardHeader>
                         <CardContent>
